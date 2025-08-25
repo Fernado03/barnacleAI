@@ -250,7 +250,7 @@ The Barnacle-AI API provides comprehensive endpoints for maritime data managemen
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Backend       │    │   Database      │
 │   (React)       │◄──►│   (Node.js)     │◄──►│   (MongoDB)     │
-│   Port: 5173    │    │   Port: 3000    │    │   Port: 27017   │
+│   Port: 5173    │    │   Port: 8000    │    │   Port: 27017   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                                 │
                                 ▼
