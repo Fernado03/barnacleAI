@@ -80,12 +80,12 @@ class BiofoulingPredictor:
             with open(self.model_path, 'rb') as f:
                 self.model_data = pickle.load(f)
             
-            print(f"Successfully loaded trained model: {self.model_data['model_name']}")
-            print(f"Model metrics - R²: {self.model_data['metrics']['test_r2']:.4f}, RMSE: {self.model_data['metrics']['test_rmse']:.2f}")
+            print(f"Successfully loaded trained model: {self.model_data['model_name']}", file=sys.stderr)
+            print(f"Model metrics - R²: {self.model_data['metrics']['test_r2']:.4f}, RMSE: {self.model_data['metrics']['test_rmse']:.2f}", file=sys.stderr)
             
         except Exception as e:
-            print(f"Warning: Could not load trained model: {e}")
-            print("Falling back to mock prediction method")
+            print(f"Warning: Could not load trained model: {e}", file=sys.stderr)
+            print("Falling back to mock prediction method", file=sys.stderr)
             self.model_data = None
     
     def validate_input(self, input_data):

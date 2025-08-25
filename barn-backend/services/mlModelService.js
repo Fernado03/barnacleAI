@@ -7,7 +7,33 @@ const path = require('path');
  */
 class MLModelService {
   constructor() {
-    this.modelPath = path.join(__dirname, '../../ml-models/models/biofouling/predict_biofouling.py');
+    // Dynamic path resolution - works in both dev and production
+    // When running from barn-backend, need to go up one level to find ml-models
+    const rootDir = path.resolve(process.cwd(), '..');
+    this.modelPath = path.join(rootDir, 'ml-models', 'models', 'biofouling', 'predict_biofouling.py');
+    
+    // Log the path for debugging
+    console.log(`🔍 ML Model path: ${this.modelPath}`);
+    console.log(`📁 Current working directory: ${process.cwd()}`);
+    console.log(`📁 Root directory: ${rootDir}`);
+    
+    // Check if model exists
+    this.checkModelAvailability();
+  }
+
+  /**
+   * Check if Python model and dependencies are available
+   */
+  checkModelAvailability() {
+    const modelExists = require('fs').existsSync(this.modelPath);
+    const modelFileExists = require('fs').existsSync(path.join(path.dirname(this.modelPath), 'best_biofouling_model.pkl'));
+    
+    console.log(`📊 ML Model script exists: ${modelExists}`);
+    console.log(`🤖 ML Model file exists: ${modelFileExists}`);
+    
+    if (!modelExists || !modelFileExists) {
+      console.warn('⚠️  ML model not found. Will use fallback predictions.');
+    }
   }
 
   /**
@@ -127,12 +153,21 @@ class MLModelService {
           return reject(new Error(`ML Input validation failed: ${validationError}`));
         }
 
+        // Check if model file exists
+        if (!require('fs').existsSync(this.modelPath)) {
+          throw new Error('ML model file not found - using fallback');
+        }
+
         // Prepare JSON input for Python script
         const jsonInput = JSON.stringify(inputData);
         
+        // Use python3 for better compatibility in production
+        const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+        
         // Execute Python ML model
-        const pythonProcess = spawn('python', [this.modelPath, jsonInput], {
-          cwd: path.dirname(this.modelPath)
+        const pythonProcess = spawn(pythonCmd, [this.modelPath, jsonInput], {
+          cwd: path.dirname(this.modelPath),
+          env: { ...process.env, PYTHONPATH: path.dirname(this.modelPath) }
         });
 
         let stdout = '';
