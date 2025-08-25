@@ -129,16 +129,12 @@ const NavBar = () => {
               <span className="xl:hidden lg:inline hidden">
                 {link.label === 'AI Models' ? 'Models' : 
                  link.label === 'Live Demo' ? 'Demo' : 
-                 link.label === 'Dashboard' ? 'Stats' :
                  link.label}
               </span>
               <span className="lg:hidden">
                 {link.label === 'AI Models' ? 'AI' : 
                  link.label === 'Live Demo' ? 'Demo' : 
-                 link.label === 'Dashboard' ? 'Stats' :
                  link.label === 'Pricing' ? 'Price' :
-                 link.label === 'About' ? 'About' :
-                 link.label === 'Home' ? 'Home' :
                  link.label}
               </span>
               {link.path === '/statistics' && !isAuthenticated && (
